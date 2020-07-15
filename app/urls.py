@@ -1,8 +1,7 @@
-from django.urls import path
+from django.urls import path,include
 from django.conf import settings
 from django.conf.urls.static import static
 from .views import (StatusListAPIView,StatusAPIView,StatusMixinsAPIView)
-
 
 s1 = StatusAPIView.as_view({
     'get':'list',

@@ -17,9 +17,24 @@ from django.contrib import admin
 from django.urls import path,include
 # from rest_framework_jwt.views import refresh_jwt_token,obtain_jwt_token
 
+from rest_framework.schemas import get_schema_view
+
+schema_view = get_schema_view(title='Users API')
+from django.views.generic import TemplateView
+
+
 urlpatterns = [
+    path('openapi/', get_schema_view(
+        title="School Service",
+        description="API developers hpoing to use our service"
+    ), name='schema'),
+      path('docs/', TemplateView.as_view(
+        template_name='documentation.html',
+        extra_context={'schema_url':'schema'}
+    ), name='swagger-ui'),
     path('admin/', admin.site.urls),
     path('api/auth/',include('accounts.api.urls')),
+    path('api/user/',include('accounts.api.user.urls')),
     # path('api/auth/jwt/refresh/',refresh_jwt_token),
     path('api/status/',include('app.urls'))
 ]

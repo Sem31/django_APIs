@@ -15,6 +15,20 @@ expires_Delta = api_settings.JWT_REFRESH_EXPIRATION_DELTA
 
 User = get_user_model()
 
+class UserPublicSerializer(serializers.ModelSerializer):
+    #want to get url
+    uri  = serializers.SerializerMethodField(read_only=True)
+
+    class Meta:
+        model = User
+        fields = [
+            'id',
+            'username',
+            'uri'
+        ]
+    def get_uri(self,obj):
+        return "/api/user/{id}".format(id=obj.id)
+
 class RegisterSerializer(serializers.ModelSerializer):
     #write_only is use for not show password in response
     password       = serializers.CharField(style={'input_type':'password'},write_only=True)

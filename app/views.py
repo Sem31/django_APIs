@@ -8,11 +8,14 @@ from rest_framework.permissions import IsAuthenticated,IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 from rest_framework import viewsets,mixins,generics
 
+from accounts.api.permissions import IsOwnerOrReadOnly
 # Create your views here.
 
 class StatusListAPIView(APIView):
-    permission_classes          = [IsAuthenticatedOrReadOnly]
+    # permission_classes          = [IsAuthenticatedOrReadOnly]
+    permission_classes          = [IsOwnerOrReadOnly] #only owner is allow to change the thing and the AnonymousUser is only read this
     authentication_classess     = [SessionAuthentication]
+    search_fields               =  ('content','user__username')
 
     def get(self,request):
         qs = Status.objects.all()
@@ -29,9 +32,11 @@ class StatusMixinsAPIView(mixins.CreateModelMixin,
             mixins.UpdateModelMixin,generics.ListAPIView):
     #IsAuthenticated = use for user must be login ot see and add the data
     #IsAuthenticatedOrReadOnly = use for read only permission
-    permission_classes          = [IsAuthenticatedOrReadOnly] # u aslo authenticate by oath and JWT
+    # permission_classes          = [IsAuthenticatedOrReadOnly] # u aslo authenticate by oath and JWT
+    permission_classes          = [IsOwnerOrReadOnly]
     authentication_classess     = [SessionAuthentication]
     serializer_class = StatusSerializer
+    search_fields               =  ('content','user__username')
 
     def get_queryset(self):
         qs = Status.objects.all()
@@ -90,7 +95,7 @@ class StatusAPIView(viewsets.ModelViewSet):
     authentication_classes     = []
     queryset  = Status.objects.all()
     serializer_class = StatusSerializer
-
+    search_fields               = ('content','user__username')
     #query filterations in viewsets
     def get_queryset(self):
         qs = Status.objects.all()
@@ -98,8 +103,6 @@ class StatusAPIView(viewsets.ModelViewSet):
         if query is not None:
             qs = qs.filter(content__icontain=query)
         return qs
-
-
 
 #serializer with single object
 #

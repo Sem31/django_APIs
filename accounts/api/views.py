@@ -86,7 +86,7 @@ class RegisterView(APIView):
         return Response({"detail":"Invalid Request"},status=400)
 
 from .serializers import RegisterSerializer
-from rest_framework import generics
+from rest_framework import generics,mixins
 from .permissions import AnonPermissionOnly,IsOwnerOrReadOnly
 
 class RegisterAPIView(generics.CreateAPIView):
